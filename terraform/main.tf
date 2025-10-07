@@ -1,12 +1,9 @@
 terraform {
   required_providers {
-    azurerm = {
-      source  = "hashicorp/azurerm"
-      version = "~>3.50"
-    }
+    azurerm = { source = "hashicorp/azurerm" }
   }
   cloud {
-    organization = "YOUR_TERRAFORM_ORG"
+    organization = "YOUR_TERRAFORM_ORG"          # Terraform Cloud org
     workspaces { name = "finlake-dev" }
   }
 }
@@ -16,12 +13,14 @@ provider "azurerm" {
 }
 
 resource "azurerm_resource_group" "rg" {
-  name     = "rg-finlake-dev"
-  location = "East US"
+  name     = var.rg_name
+  location = var.location
 }
 
+resource "random_id" "suffix" { byte_length = 2 }
+
 resource "azurerm_storage_account" "adls" {
-  name                     = "finlakeadls${random_id.suffix.hex}"
+  name                     = lower("${var.sa_prefix}${random_id.suffix.hex}")
   resource_group_name      = azurerm_resource_group.rg.name
   location                 = azurerm_resource_group.rg.location
   account_tier             = "Standard"
@@ -30,28 +29,12 @@ resource "azurerm_storage_account" "adls" {
 }
 
 resource "azurerm_key_vault" "kv" {
-  name                = "kv-finlake-dev"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-  tenant_id           = data.azurerm_client_config.current.tenant_id
-  sku_name            = "standard"
+  name                        = var.kv_name
+  resource_group_name         = azurerm_resource_group.rg.name
+  location                    = azurerm_resource_group.rg.location
+  tenant_id                   = data.azurerm_client_config.current.tenant_id
+  sku_name                    = "standard"
+  soft_delete_enabled         = true
 }
-
-resource "azurerm_data_factory" "adf" {
-  name                = "adf-finlake-dev"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-}
-
-resource "azurerm_databricks_workspace" "dbw" {
-  name                = "dbw-finlake-dev"
-  resource_group_name = azurerm_resource_group.rg.name
-  location            = azurerm_resource_group.rg.location
-  sku                 = "premium"
-}
-
-resource "random_id" "suffix" {
-  byte_length = 2
-}
-
+# add databricks workspace & data factory resources (use azurerm_databricks_workspace & azurerm_data_factory)
 data "azurerm_client_config" "current" {}
