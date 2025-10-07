@@ -1,10 +1,17 @@
 terraform {
   required_providers {
-    azurerm = { source = "hashicorp/azurerm" }
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~>3.50"
+    }
+    random = {
+      source  = "hashicorp/random"
+      version = "~>3.0"
+    }
   }
   cloud {
-    organization = "YOUR_TERRAFORM_ORG"          # Terraform Cloud org
-    workspaces { name = "finlake-dev" }
+    organization = "YOUR_TERRAFORM_ORG"       # ← replace this
+    workspaces { name = "finlake-infra-dev" }
   }
 }
 
@@ -12,12 +19,16 @@ provider "azurerm" {
   features {}
 }
 
+data "azurerm_client_config" "current" {}
+
 resource "azurerm_resource_group" "rg" {
   name     = var.rg_name
   location = var.location
 }
 
-resource "random_id" "suffix" { byte_length = 2 }
+resource "random_id" "suffix" {
+  byte_length = 2
+}
 
 resource "azurerm_storage_account" "adls" {
   name                     = lower("${var.sa_prefix}${random_id.suffix.hex}")
@@ -36,5 +47,16 @@ resource "azurerm_key_vault" "kv" {
   sku_name                    = "standard"
   soft_delete_enabled         = true
 }
-# add databricks workspace & data factory resources (use azurerm_databricks_workspace & azurerm_data_factory)
-data "azurerm_client_config" "current" {}
+
+resource "azurerm_data_factory" "adf" {
+  name                = var.adf_name
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
+}
+
+resource "azurerm_databricks_workspace" "dbw" {
+  name                = var.dbw_name
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
+  sku                 = "premium"
+}
