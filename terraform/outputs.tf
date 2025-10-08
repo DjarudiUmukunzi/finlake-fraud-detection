@@ -22,3 +22,12 @@ output "databricks_workspace" {
   description = "Databricks workspace name"
   value       = azurerm_databricks_workspace.dbw.name
 }
+output "detected_tenant_id" {
+  description = "Tenant ID the provider is authenticated against"
+  value       = data.azurerm_client_config.current.tenant_id
+}
+
+output "detected_subscription_id" {
+  description = "Subscription ID the provider is authenticated against"
+  value       = data.azurerm_client_config.current.subscription_id
+}
