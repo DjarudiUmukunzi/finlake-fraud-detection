@@ -10,7 +10,7 @@ terraform {
     }
   }
   cloud {
-    organization = "YOUR_TERRAFORM_ORG"       # ← replace this
+    organization = "finlake-fraud-detection"       # ← replace this
     workspaces { name = "finlake-infra-dev" }
   }
 }
@@ -36,7 +36,7 @@ resource "azurerm_storage_account" "adls" {
   location                 = azurerm_resource_group.rg.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
-  is_hns_enabled           = true
+  hierarchical_namespace_enabled = true
 }
 
 resource "azurerm_key_vault" "kv" {
