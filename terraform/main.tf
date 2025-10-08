@@ -17,8 +17,7 @@ terraform {
 
 provider "azurerm" {
   features {}
-# Disable Terraform's automatic resource provider registration
-  resource_provider_registrations = "none"
+
 }
 
 data "azurerm_client_config" "current" {}
