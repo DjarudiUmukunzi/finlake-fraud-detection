@@ -36,7 +36,7 @@ resource "azurerm_storage_account" "adls" {
   location                 = azurerm_resource_group.rg.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
-  hierarchical_namespace_enabled = true
+  is_hns_enabled = true
 }
 
 resource "azurerm_key_vault" "kv" {
