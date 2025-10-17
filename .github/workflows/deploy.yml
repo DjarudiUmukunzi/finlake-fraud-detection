@@ -1,4 +1,4 @@
-# .github/workflows/deploy.yml (Updated for Notebook Deployment Only)
+# .github/workflows/deploy.yml (Corrected for Notebook Deployment)
 
 name: Deploy Databricks Notebooks
 
