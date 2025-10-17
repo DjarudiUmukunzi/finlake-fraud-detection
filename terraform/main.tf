@@ -10,7 +10,7 @@ terraform {
     }
   }
   cloud {
-    organization = "finlake-fraud-detection"       # ← replace this
+    organization = "finlake-fraud-detection"       
     workspaces { name = "finlake-infra-dev" }
   }
 }
