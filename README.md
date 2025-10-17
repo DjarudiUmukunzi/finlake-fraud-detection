@@ -49,9 +49,9 @@ The architecture ingests raw financial transaction data, processes it through a 
 ├── notebooks/ # All Databricks notebooks (source of truth)
 │ ├── 01_ingest_to_delta.ipynb
 │ ├── 02_clean_transform.ipynb
-│ ├── 03_feature_engineering_pro.py
-│ ├── 04_train_fraud_model_pro.py
-│ └── 05_fraud_summary_pro.py
+│ ├── 03_feature_engineering.py
+│ ├── 04_train_fraud_model.py
+│ └── 05_fraud_summary.py
 ├── terraform/ # Terraform code for all Azure infrastructure
 │ ├── main.tf
 │ └── variables.tf
@@ -89,14 +89,15 @@ The ADF pipeline orchestrates the following sequence of Databricks notebooks:
 
 1. **Ingestion** (`01_ingest_to_delta`): Ingests raw data into a Bronze Delta table.  
 2. **Cleaning** (`02_clean_transform`): Cleans the raw data and writes to a Silver Delta table.  
-3. **Feature Engineering** (`03_feature_engineering_pro`): Creates advanced behavioral features (e.g., transaction velocity, Z-scores).  
-4. **Model Training & Prediction** (`04_train_fraud_model_pro`):  
+3. **Feature Engineering** (`03_feature_engineering`): Creates advanced behavioral features (e.g., transaction velocity, Z-scores).  
+4. **Model Training & Prediction** (`04_train_fraud_model`):  
    - Handles severe class imbalance  
    - Trains a LightGBM model  
    - Uses MLflow to track experiments, log metrics, and register the model  
    - Performs batch prediction on the full daily dataset  
-5. **Summarization** (`05_fraud_summary_pro`): Aggregates predictions into an hourly summary table with business KPIs, writing to a Gold Delta table for reporting  
+5. **Summarization** (`05_fraud_summary`): Aggregates predictions into an hourly summary table with business KPIs, writing to a Gold Delta table for reporting  
 
 ## 🔁 CI/CD Automation
 - **Terraform Cloud**: Manages the infrastructure lifecycle. Any push to `main` with changes in `/terraform` triggers Terraform Cloud to apply updates.  
 - **GitHub Actions**: Manages the application code lifecycle. Any push to `main` with changes in `/notebooks` triggers the workflow in `.github/workflows/deploy.yml` to sync notebooks to Databricks.  
+
