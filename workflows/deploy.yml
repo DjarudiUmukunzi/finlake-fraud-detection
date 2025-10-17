@@ -1,0 +1,87 @@
+# .github/workflows/deploy.yml
+
+name: Deploy Fintech Lakehouse Infrastructure and Notebooks
+
+# This workflow triggers automatically on any push to the 'main' branch.
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: # Allows manual triggering from the GitHub Actions UI
+
+jobs:
+  # ====================================================================
+  # JOB 1: Deploy Azure Infrastructure using Terraform
+  # This job ensures your Azure environment matches your code.
+  # ====================================================================
+  deploy-infrastructure:
+    name: 'Deploy Azure Infrastructure'
+    runs-on: ubuntu-latest
+    environment: production # Optional: for approval rules
+
+    defaults:
+      run:
+        # Assumes your Terraform files are in a 'terraform' subdirectory
+        working-directory: ./terraform
+
+    steps:
+      - name: Checkout Repository Code
+        uses: actions/checkout@v3
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          client-secret: ${{ secrets.ARM_CLIENT_SECRET }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: Terraform Initialize
+        id: init
+        run: terraform init
+
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan -no-color
+
+      - name: Terraform Apply
+        id: apply
+        # This only runs if changes are pushed to the main branch
+        if: github.ref == 'refs/heads/main'
+        run: terraform apply -auto-approve
+
+  # ====================================================================
+  # JOB 2: Deploy Databricks Notebooks
+  # This job syncs your notebooks from Git to the Databricks workspace.
+  # ====================================================================
+  deploy-databricks-notebooks:
+    name: 'Deploy Databricks Notebooks'
+    runs-on: ubuntu-latest
+    needs: deploy-infrastructure # Ensures infrastructure is ready before deploying notebooks
+
+    steps:
+      - name: Checkout Repository Code
+        uses: actions/checkout@v3
+
+      - name: Setup Python for Databricks CLI
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install Databricks CLI
+        run: pip install databricks-cli
+
+      - name: Configure Databricks CLI Authentication
+        run: |
+          echo "[DEFAULT]" > ~/.databrickscfg
+          echo "host = ${{ secrets.DATABRICKS_HOST }}" >> ~/.databrickscfg
+          echo "token = ${{ secrets.DATABRICKS_TOKEN }}" >> ~/.databrickscfg
+
+      - name: Deploy Notebooks to Databricks Workspace
+        run: |
+          # This command imports the contents of your repo's /notebooks folder
+          # into a specific path in the Databricks workspace, overwriting existing files.
+          databricks workspace import_dir ./notebooks /Shared/finlake-fraud-detection/ --overwrite
