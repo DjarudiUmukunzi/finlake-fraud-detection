@@ -43,19 +43,22 @@ The architecture ingests raw financial transaction data, processes it through a 
 
 ## 📁 Project Structure
 
+```
 .
-├── .github/workflows/ # GitHub Actions CI/CD pipeline for notebook deployment
-│ └── deploy.yml
-├── notebooks/ # All Databricks notebooks (source of truth)
-│ ├── 01_ingest_to_delta.ipynb
-│ ├── 02_clean_transform.ipynb
-│ ├── 03_feature_engineering.py
-│ ├── 04_train_fraud_model.py
-│ └── 05_fraud_summary.py
-├── terraform/ # Terraform code for all Azure infrastructure
-│ ├── main.tf
-│ └── variables.tf
-└── README.md # This file
+├── .github/
+│   └── workflows/              # GitHub Actions CI/CD pipeline for notebook deployment
+│       └── deploy.yml
+├── notebooks/                  # All Databricks notebooks (source of truth)
+│   ├── 01_ingest_to_delta.ipynb
+│   ├── 02_clean_transform.ipynb
+│   ├── 03_feature_engineering.py
+│   ├── 04_train_fraud_model.py
+│   └── 05_fraud_summary.py
+├── terraform/                  # Terraform code for all Azure infrastructure
+│   ├── main.tf
+│   └── variables.tf
+└── README.md                   # This file
+```
 
 
 ## ⚙️ Setup and Deployment
@@ -100,4 +103,5 @@ The ADF pipeline orchestrates the following sequence of Databricks notebooks:
 ## 🔁 CI/CD Automation
 - **Terraform Cloud**: Manages the infrastructure lifecycle. Any push to `main` with changes in `/terraform` triggers Terraform Cloud to apply updates.  
 - **GitHub Actions**: Manages the application code lifecycle. Any push to `main` with changes in `/notebooks` triggers the workflow in `.github/workflows/deploy.yml` to sync notebooks to Databricks.  
+
 
