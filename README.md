@@ -11,12 +11,12 @@ This repository contains the complete infrastructure, data pipeline, and machine
 ### 1. ADF Pipeline Orchestration
 This screenshot shows the successful end-to-end orchestration of the data pipeline in Azure Data Factory, from ingestion to the final summary.
 
-![ADF Pipeline Success](image_a67882.png)
+![ADF Pipeline Success](pipeline.png)
 
 ### 2. MLflow Experiment Results
 The model training pipeline was tracked with MLflow. The results show a high-performance model with near-perfect metrics for fraud classification.
 
-![MLflow Experiment Run](image_df4ba3.png)
+![MLflow Experiment Run](score.png)
 
 ### 3. Final Data Visualization
 This is the final output of the `05_fraud_summary_pro.py` notebook, showing the aggregated hourly fraud data, proving the pipeline's success.
@@ -124,6 +124,7 @@ The ADF pipeline orchestrates the following sequence of Databricks notebooks:
 ## 🔁 CI/CD Automation
 - **Terraform Cloud**: Manages the infrastructure lifecycle. Any push to `main` with changes in `/terraform` triggers Terraform Cloud to apply updates.  
 - **GitHub Actions**: Manages the application code lifecycle. Any push to `main` with changes in `/notebooks` triggers the workflow in `.github/workflows/deploy.yml` to sync notebooks to Databricks.  
+
 
 
 
