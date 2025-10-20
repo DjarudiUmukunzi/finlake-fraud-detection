@@ -4,11 +4,32 @@ This repository contains the complete infrastructure, data pipeline, and machine
 
 ---
 
+## 🏆 Project Showcase & Results
+
+**Note:** To manage cloud costs, the live compute resources (Databricks, ADF) have been decommissioned. The following artifacts demonstrate the successful execution and results of the project.
+
+### 1. ADF Pipeline Orchestration
+This screenshot shows the successful end-to-end orchestration of the data pipeline in Azure Data Factory, from ingestion to the final summary.
+
+![ADF Pipeline Success](image_a67882.png)
+
+### 2. MLflow Experiment Results
+The model training pipeline was tracked with MLflow. The results show a high-performance model with near-perfect metrics for fraud classification.
+
+![MLflow Experiment Run](image_df4ba3.png)
+
+### 3. Final Data Visualization
+This is the final output of the `05_fraud_summary_pro.py` notebook, showing the aggregated hourly fraud data, proving the pipeline's success.
+
+*(**Action:** Add your screenshot from the summary notebook here)*
+
+---
+
 ## 📚 Table of Contents
-- [Architecture Overview](#-architecture-overview)
+- [Architecture Overview](#️-architecture-overview)
 - [Technology Stack](#-technology-stack)
 - [Project Structure](#-project-structure)
-- [Setup and Deployment](#-setup-and-deployment)
+- [Setup and Deployment](#️-setup-and-deployment)
 - [Data Pipeline Workflow](#-data-pipeline-workflow)
 - [CI/CD Automation](#-cicd-automation)
 
@@ -17,27 +38,27 @@ This repository contains the complete infrastructure, data pipeline, and machine
 ## 🏗️ Architecture Overview
 The architecture ingests raw financial transaction data, processes it through a multi-stage medallion architecture in Databricks, trains a machine learning model to detect fraud, and generates summary reports for business intelligence.
 
-- **Infrastructure**: Defined via Terraform for repeatable, version-controlled deployments.  
-- **Orchestration**: Azure Data Factory (ADF) triggers Databricks jobs on a schedule.  
-- **Processing & ML**: Azure Databricks handles data cleaning, feature engineering, model training (MLflow), and batch prediction.  
-- **Storage**: Azure Data Lake Storage Gen2 stores data in Delta Lake format across Bronze, Silver, and Gold layers.  
-- **Security**: Azure Key Vault stores credentials accessed via a managed Service Principal.  
+- **Infrastructure**: Defined via Terraform for repeatable, version-controlled deployments.
+- **Orchestration**: Azure Data Factory (ADF) triggers Databricks jobs on a schedule.
+- **Processing & ML**: Azure Databricks handles data cleaning, feature engineering, model training (MLflow), and batch prediction.
+- **Storage**: Azure Data Lake Storage Gen2 stores data in Delta Lake format across Bronze, Silver, and Gold layers.
+- **Security**: Azure Key Vault stores credentials accessed via a managed Service Principal.
 
 ---
 
 ## 🧰 Technology Stack
 
 | Component | Technology | Purpose |
-| ---------- | ----------- | -------- |
-| **Cloud Provider** | Microsoft Azure | Core cloud platform for all services |
-| **IaC** | Terraform & Terraform Cloud | Automating provisioning of Azure resources |
-| **Data Lake** | Azure Data Lake Storage (ADLS) Gen2 | Scalable storage for raw, processed, and curated data |
-| **Data Format** | Delta Lake | ACID transactions, time travel, and reliability |
-| **ETL & ML** | Azure Databricks & Apache Spark | Data transformation, feature engineering, ML model training |
-| **MLOps** | MLflow | Experiment tracking, model logging, and registry |
-| **Orchestration** | Azure Data Factory (ADF) | Scheduling and orchestrating the data pipeline |
-| **Security** | Azure Key Vault | Secure storage and management of secrets |
-| **CI/CD** | GitHub Actions | Automated deployment of Databricks notebooks |
+| :--- | :--- | :--- |
+| **Cloud Provider** | `Microsoft Azure` | Core cloud platform for all services. |
+| **IaC** | `Terraform` & `Terraform Cloud` | Automating provisioning of Azure resources. |
+| **Data Lake** | `ADLS Gen2` | Scalable storage for raw, processed, and curated data. |
+| **Data Format** | `Delta Lake` | ACID transactions, time travel, and reliability. |
+| **ETL & ML** | `Azure Databricks` & `Apache Spark` | Data transformation, feature engineering, ML model training. |
+| **MLOps** | `MLflow` | Experiment tracking, model logging, and registry. |
+| **Orchestration** | `Azure Data Factory (ADF)` | Scheduling and orchestrating the data pipeline. |
+| **Security** | `Azure Key Vault` | Secure storage and management of secrets. |
+| **CI/CD** | `GitHub Actions` | Automated deployment of Databricks notebooks. |
 
 ---
 
@@ -103,5 +124,6 @@ The ADF pipeline orchestrates the following sequence of Databricks notebooks:
 ## 🔁 CI/CD Automation
 - **Terraform Cloud**: Manages the infrastructure lifecycle. Any push to `main` with changes in `/terraform` triggers Terraform Cloud to apply updates.  
 - **GitHub Actions**: Manages the application code lifecycle. Any push to `main` with changes in `/notebooks` triggers the workflow in `.github/workflows/deploy.yml` to sync notebooks to Databricks.  
+
 
 
